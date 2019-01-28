@@ -74,8 +74,14 @@ public class MainActivity extends AppCompatActivity {
       public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         // called when response HTTP status is "200 OK"
         Log.d("Bitcoin", "Request was successful!");
-        BitcoinDataModel bitcoinData = BitcoinDataModel.fromJson(response);
-        updateUI(bitcoinData);
+
+        try {
+          String mResult = response.getString("last");
+          mPriceTextView.setText(mResult);
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+
       }
 
       @Override
@@ -86,11 +92,5 @@ public class MainActivity extends AppCompatActivity {
         Log.e("ERROR", e.toString());
       }
     });
-  }
-
-  private void updateUI(BitcoinDataModel bitcoinData){
-    Log.d("Bitcoin", "Result: " + bitcoinData.getResult());
-    String mResult = Double.toString(bitcoinData.getResult());
-    mPriceTextView.setText(mResult);
   }
 }
