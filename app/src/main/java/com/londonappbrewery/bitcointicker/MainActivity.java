@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
   // Constants:
   // Create the base URL
-  private final String BASE_URL = "https://apiv2.bitcoinaverage.com/constants/exchangerates/local";
+  private final String BASE_URL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC";
 
   // Member Variables:
   TextView mPriceTextView;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
         Log.d("Bitcoin", "" + parent.getItemAtPosition(position));
-        letsDoSomeNetworking(BASE_URL);
+        letsDoSomeNetworking(BASE_URL + parent.getItemAtPosition(position));
       }
 
       @Override
@@ -73,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         // called when response HTTP status is "200 OK"
-        Log.d("Bitcoin", "JSON: " + response.toString());
+        Log.d("Bitcoin", "Request was successful!");
+        BitcoinDataModel bitcoinData = BitcoinDataModel.fromJson(response);
+        updateUI(bitcoinData);
       }
 
       @Override
@@ -84,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
         Log.e("ERROR", e.toString());
       }
     });
+  }
 
+  private void updateUI(BitcoinDataModel bitcoinData){
+    Log.d("Bitcoin", "Result: " + bitcoinData.getResult());
+    String mResult = Double.toString(bitcoinData.getResult());
+    mPriceTextView.setText(mResult);
   }
 }
